@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Stock Market Trader</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  background:#0b1120;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+}
+.box {
+  max-width:420px;
+  margin:auto;
+  padding:20px;
+}
+h1 { color:#38bdf8; }
+.money { font-size:26px; color:#22c55e; }
+.timer { color:#facc15; font-size:18px; }
+.trend { font-size:18px; margin:10px 0; }
+.info {
+  font-size:14px;
+  color:#cbd5e1;
+  margin-bottom:10px;
+}
+button {
+  padding:12px;
+  width:30%;
+  margin:5px;
+  font-size:16px;
+  border:none;
+  border-radius:6px;
+}
+.buy { background:#22c55e; }
+.sell { background:#ef4444; color:white; }
+.hold { background:#facc15; }
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h1>📈 Stock Market Trader</h1>
+
+  <div class="info">
+    Bull → BUY | Bear → SELL | Sideways → HOLD  
+  </div>
+
+  <p class="timer">Time Left: <span id="time">60</span>s</p>
+  <p class="money" id="money">₹100000</p>
+
+  <div class="trend">
+    Market Trend: <b id="trend">WAITING</b>
+  </div>
+
+  <button class="buy" onclick="trade('buy')">BUY</button>
+  <button class="sell" onclick="trade('sell')">SELL</button>
+  <button class="hold" onclick="trade('hold')">HOLD</button>
+</div>
+
+<script>
+var money = 100000;
+var time = 60;
+var started = false;
+var trend = "WAITING";
+var timerInterval;
+var trendInterval;
+
+function startGame() {
+  timerInterval = setInterval(function() {
+    time--;
+    document.getElementById("time").innerText = time;
+    if (time <= 0) endGame();
+  }, 1000);
+
+  trendInterval = setInterval(changeTrend, 5000);
+  changeTrend();
+}
+
+function changeTrend() {
+  var r = Math.random();
+  if (r < 0.33) trend = "BULL 📈";
+  else if (r < 0.66) trend = "BEAR 📉";
+  else trend = "SIDEWAYS 😐";
+
+  document.getElementById("trend").innerText = trend;
+}
+
+function trade(action) {
+  if (!started) {
+    started = true;
+    startGame();
+  }
+
+  if (trend.includes("BULL") && action === "buy") money += 10000;
+  else if (trend.includes("BEAR") && action === "sell") money += 10000;
+  else if (trend.includes("SIDEWAYS") && action === "hold") money += 5000;
+  else money -= 5000;
+
+  document.getElementById("money").innerText = "₹" + money;
+}
+
+function endGame() {
+  clearInterval(timerInterval);
+  clearInterval(trendInterval);
+
+  var rating = "Retail Investor 😐";
+  if (money >= 120000) rating = "Smart Investor 🧠";
+  if (money >= 150000) rating = "Market Master 😎";
+  if (money >= 180000) rating = "Next Harshad Mehta 🚀";
+
+  document.body.innerHTML =
+    "<h1>🔔 Market Closed</h1>" +
+    "<h2>Final Capital: ₹" + money + "</h2>" +
+    "<h3>" + rating + "</h3>" +
+    "<p>Thanks for playing!</p>";
+}
+</script>
+
+</body>
+</html>
